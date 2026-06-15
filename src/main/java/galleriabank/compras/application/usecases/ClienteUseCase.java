@@ -6,6 +6,7 @@ import galleriabank.compras.core.ports.PedidoRepositoryPort;
 import galleriabank.compras.infrastructure.web.dtos.request.ClienteRequestDTO;
 import galleriabank.compras.infrastructure.web.exceptions.BusinessException;
 import galleriabank.compras.infrastructure.web.exceptions.ResourceNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -47,5 +48,14 @@ public class ClienteUseCase {
             throw new BusinessException("Não é possível excluir um cliente que possui pedidos vinculados.");
         }
         clienteRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Cliente atualizar(Long id, @Valid ClienteRequestDTO dto) {
+        Cliente cliente = buscarPorId(id);
+        cliente.setNome(dto.nome());
+        cliente.setCpf(dto.cpf());
+        cliente.setTelefone(dto.telefone());
+        return clienteRepository.save(cliente);
     }
 }

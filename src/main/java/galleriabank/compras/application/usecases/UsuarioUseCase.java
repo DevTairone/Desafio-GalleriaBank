@@ -46,6 +46,13 @@ public class UsuarioUseCase {
         usuario.setExcluido(true);
         usuarioRepository.save(usuario);
     }
+
+    @Transactional
+    public Usuario atualizar(Long id,UsuarioRequestDTO dto) {
+        Usuario usuario = buscarPorId(id);
+        usuario.setNome(dto.nome());
+        usuario.setLogin(dto.login());
+        usuario.setSenha(passwordEncoder.encode(dto.senha()));
+        return usuarioRepository.save(usuario);
+    }
 }
-
-

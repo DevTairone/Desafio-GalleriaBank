@@ -35,4 +35,10 @@ public class ClienteController {
         clienteUseCase.deletar(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ClienteRequestDTO dto) {
+        Cliente cliente = clienteUseCase.atualizar(id, dto);
+        return ResponseEntity.ok(ClienteResponseDTO.fromEntity(cliente));
+    }
 }

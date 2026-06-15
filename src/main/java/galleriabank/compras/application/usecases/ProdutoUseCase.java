@@ -29,6 +29,14 @@ public class ProdutoUseCase {
         return produtoRepository.save(produto);
     }
 
+    @Transactional(readOnly = true)
+    public Produto atualizar(Long id,ProdutoRequestDTO dto) {
+        Produto produto = buscarPorId(id);
+        produto.setDescricao(dto.descricao());
+        produto.setValor(dto.valor());
+        return produtoRepository.save(produto);
+    }
+
     public Produto buscarPorId(Long id) {
         return produtoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado."));

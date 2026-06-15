@@ -35,4 +35,10 @@ public class UsuarioController {
         usuarioUseCase.removerLogico(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioRequestDTO dto) {
+        Usuario usuario = usuarioUseCase.atualizar(id, dto);
+        return ResponseEntity.ok(UsuarioResponseDTO.fromEntity(usuario));
+    }
 }
