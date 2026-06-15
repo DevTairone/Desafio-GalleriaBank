@@ -65,7 +65,9 @@ public class Pedido {
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
 
     public List<Produto> getProdutos() { return produtos; }
-    public void setProdutos(List<Produto> produtos) { this.produtos = produtos; }
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = produtos != null ? new ArrayList<>(produtos) : new ArrayList<>();
+    }
 
     @PrePersist
     protected void onCreate() {

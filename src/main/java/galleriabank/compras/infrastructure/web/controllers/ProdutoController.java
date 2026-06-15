@@ -38,7 +38,7 @@ public class ProdutoController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<ProdutoResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ProdutoRequestDTO dto) {
         Produto produto = produtoUseCase.atualizar(id, dto);
         return ResponseEntity.ok(new ProdutoResponseDTO(produto.getId(), produto.getDescricao(), produto.getValor()));

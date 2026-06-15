@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record PedidoRequestDTO(
-        String numero,
         String descricao,
         @NotNull Long clienteId,
         @NotEmpty List<Long> produtosIds

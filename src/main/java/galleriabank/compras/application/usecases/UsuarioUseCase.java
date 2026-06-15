@@ -5,6 +5,7 @@ import galleriabank.compras.core.ports.UsuarioRepositoryPort;
 import galleriabank.compras.infrastructure.web.dtos.request.UsuarioRequestDTO;
 import galleriabank.compras.infrastructure.web.exceptions.BusinessException;
 import galleriabank.compras.infrastructure.web.exceptions.ResourceNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -13,11 +14,11 @@ import org.springframework.stereotype.Service;
 public class UsuarioUseCase {
 
     private final UsuarioRepositoryPort usuarioRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public UsuarioUseCase(UsuarioRepositoryPort usuarioRepository, PasswordEncoder passwordEncoder) {
+
+    public UsuarioUseCase(UsuarioRepositoryPort usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -29,7 +30,7 @@ public class UsuarioUseCase {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.nome());
         usuario.setLogin(dto.login());
-        usuario.setSenha(passwordEncoder.encode(dto.senha()));
+        usuario.setSenha(passwordEncoder.encode(dto.senha())); // Continua funcionando igual
         usuario.setExcluido(false);
 
         return usuarioRepository.save(usuario);

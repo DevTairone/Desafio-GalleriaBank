@@ -33,7 +33,7 @@ class UsuarioUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        usuarioUseCase = new UsuarioUseCase(usuarioRepository, passwordEncoder);
+        usuarioUseCase = new UsuarioUseCase(usuarioRepository);
 
         usuarioAtivo = new Usuario();
         usuarioAtivo.setId(1L);

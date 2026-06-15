@@ -47,10 +47,6 @@ public class PedidoUseCase {
         pedido.setProdutos(produtos);
         pedido.setDescricao(dto.descricao());
 
-        if (dto.numero() != null && !dto.numero().isBlank()) {
-            pedido.setNumero(dto.numero());
-        }
-
         Pedido pedidoSalvo = pedidoRepository.save(pedido);
 
         if (pedidoSalvo.getNumero() == null) {
