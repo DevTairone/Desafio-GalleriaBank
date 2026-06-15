@@ -1,8 +1,9 @@
 package galleriabank.compras.infrastructure.web.controllers;
 
 import galleriabank.compras.core.domain.Usuario;
-import galleriabank.compras.infrastructure.services.UsuarioService;
+import galleriabank.compras.application.usecases.UsuarioUseCase;
 import galleriabank.compras.infrastructure.web.dtos.request.UsuarioRequestDTO;
+import galleriabank.compras.infrastructure.web.dtos.response.UsuarioResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,25 +13,26 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
-    private final UsuarioService usuarioService;
+    private final UsuarioUseCase usuarioUseCase;
 
-    public UsuarioController(UsuarioService usuarioService) {
-        this.usuarioService = usuarioService;
+    public UsuarioController(UsuarioUseCase usuarioUseCase) {
+        this.usuarioUseCase = usuarioUseCase;
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> cadastrar(@RequestBody @Valid UsuarioRequestDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.cadastrar(dto));
+    public ResponseEntity<UsuarioResponseDTO> cadastrar(@RequestBody @Valid UsuarioRequestDTO dto) {
+        Usuario usuario = usuarioUseCase.cadastrar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioResponseDTO.fromEntity(usuario));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(usuarioService.buscarPorId(id));
+    public ResponseEntity<UsuarioResponseDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(UsuarioResponseDTO.fromEntity(usuarioUseCase.buscarPorId(id)));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removerLogico(@PathVariable Long id) {
-        usuarioService.removerLogico(id);
+        usuarioUseCase.removerLogico(id);
         return ResponseEntity.noContent().build();
     }
 }

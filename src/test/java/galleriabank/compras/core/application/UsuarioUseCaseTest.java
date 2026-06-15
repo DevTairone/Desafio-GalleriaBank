@@ -1,16 +1,17 @@
-package galleriabank.compras.infrastructure.services;
+package galleriabank.compras.core.application;
 
 import galleriabank.compras.core.domain.Usuario;
-import galleriabank.compras.infrastructure.persistence.repositories.UsuarioRepository;
+import galleriabank.compras.core.ports.UsuarioRepositoryPort;
 import galleriabank.compras.infrastructure.web.dtos.request.UsuarioRequestDTO;
 import galleriabank.compras.infrastructure.web.exceptions.BusinessException;
+import galleriabank.compras.application.usecases.UsuarioUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -18,19 +19,22 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UsuarioServiceTest {
+class UsuarioUseCaseTest {
 
     @Mock
-    private UsuarioRepository usuarioRepository;
+    private UsuarioRepositoryPort usuarioRepository;
 
-    @InjectMocks
-    private UsuarioService usuarioService;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
+    private UsuarioUseCase usuarioUseCase;
     private Usuario usuarioAtivo;
     private UsuarioRequestDTO usuarioRequestDTO;
 
     @BeforeEach
     void setUp() {
+        usuarioUseCase = new UsuarioUseCase(usuarioRepository, passwordEncoder);
+
         usuarioAtivo = new Usuario();
         usuarioAtivo.setId(1L);
         usuarioAtivo.setNome("Tairone");
@@ -47,7 +51,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.existsByLogin("tairone.dev")).thenReturn(true);
 
         BusinessException exception = assertThrows(BusinessException.class, () -> {
-            usuarioService.cadastrar(usuarioRequestDTO);
+            usuarioUseCase.cadastrar(usuarioRequestDTO);
         });
 
         assertEquals("Este login já está em uso, mesmo que por um usuário inativo.", exception.getMessage());
@@ -60,9 +64,10 @@ class UsuarioServiceTest {
         when(usuarioRepository.findByIdAndExcluidoFalse(1L)).thenReturn(Optional.of(usuarioAtivo));
         when(usuarioRepository.save(any())).thenReturn(usuarioAtivo);
 
-        usuarioService.removerLogico(1L);
+        usuarioUseCase.removerLogico(1L);
 
         assertTrue(usuarioAtivo.isExcluido(), "O usuário deveria estar marcado como excluído (true) após a remoção lógica");
         verify(usuarioRepository, times(1)).save(usuarioAtivo);
     }
 }
+

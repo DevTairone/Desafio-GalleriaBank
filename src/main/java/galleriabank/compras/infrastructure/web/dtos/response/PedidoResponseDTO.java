@@ -1,6 +1,7 @@
 package galleriabank.compras.infrastructure.web.dtos.response;
 
 import galleriabank.compras.core.domain.Pedido;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public record PedidoResponseDTO(
         Long clienteId,
         String clienteNome,
         List<ProdutoResponseDTO> produtos,
-        double total
+        BigDecimal total
 ) {
     public static PedidoResponseDTO fromEntity(Pedido pedido) {
         var listaProdutos = pedido.getProdutos().stream()

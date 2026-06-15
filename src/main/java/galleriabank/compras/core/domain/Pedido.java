@@ -3,20 +3,14 @@ package galleriabank.compras.core.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+// ...existing code...
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "tb_pedidos")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Pedido {
 
     @Id
@@ -44,14 +38,43 @@ public class Pedido {
     )
     private List<Produto> produtos = new ArrayList<>();
 
+    public Pedido() {}
+
+    public Pedido(Long id, String numero, LocalDateTime dataEmissao, String descricao, Cliente cliente, List<Produto> produtos) {
+        this.id = id;
+        this.numero = numero;
+        this.dataEmissao = dataEmissao;
+        this.descricao = descricao;
+        this.cliente = cliente;
+        this.produtos = produtos != null ? produtos : new ArrayList<>();
+    }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getNumero() { return numero; }
+    public void setNumero(String numero) { this.numero = numero; }
+
+    public LocalDateTime getDataEmissao() { return dataEmissao; }
+    public void setDataEmissao(LocalDateTime dataEmissao) { this.dataEmissao = dataEmissao; }
+
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
+
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+
+    public List<Produto> getProdutos() { return produtos; }
+    public void setProdutos(List<Produto> produtos) { this.produtos = produtos; }
+
     @PrePersist
     protected void onCreate() {
         this.dataEmissao = LocalDateTime.now();
     }
 
-    public double getTotal() {
+    public BigDecimal getTotal() {
         return produtos.stream()
-                .mapToDouble(p -> p.getValor().doubleValue())
-                .sum();
+                .map(p -> p.getValor())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

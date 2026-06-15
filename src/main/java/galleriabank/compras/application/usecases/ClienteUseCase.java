@@ -1,29 +1,35 @@
-package galleriabank.compras.infrastructure.services;
+package galleriabank.compras.application.usecases;
 
 import galleriabank.compras.core.domain.Cliente;
-import galleriabank.compras.infrastructure.persistence.repositories.ClienteRepository;
-import galleriabank.compras.infrastructure.persistence.repositories.PedidoRepository;
+import galleriabank.compras.core.ports.ClienteRepositoryPort;
+import galleriabank.compras.core.ports.PedidoRepositoryPort;
+import galleriabank.compras.infrastructure.web.dtos.request.ClienteRequestDTO;
 import galleriabank.compras.infrastructure.web.exceptions.BusinessException;
 import galleriabank.compras.infrastructure.web.exceptions.ResourceNotFoundException;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 @Service
-public class ClienteService {
+public class ClienteUseCase {
 
-    private final ClienteRepository clienteRepository;
-    private final PedidoRepository pedidoRepository;
+    private final ClienteRepositoryPort clienteRepository;
+    private final PedidoRepositoryPort pedidoRepository;
 
-    public ClienteService(ClienteRepository clienteRepository, PedidoRepository pedidoRepository) {
+    public ClienteUseCase(ClienteRepositoryPort clienteRepository, PedidoRepositoryPort pedidoRepository) {
         this.clienteRepository = clienteRepository;
         this.pedidoRepository = pedidoRepository;
     }
 
     @Transactional
-    public Cliente cadastrar(Cliente cliente) {
-        if (clienteRepository.existsByCpf(cliente.getCpf())) {
+    public Cliente cadastrar(ClienteRequestDTO dto) {
+        if (clienteRepository.existsByCpf(dto.cpf())) {
             throw new BusinessException("Já existe um cliente cadastrado com este CPF.");
         }
+        Cliente cliente = new Cliente();
+        cliente.setNome(dto.nome());
+        cliente.setCpf(dto.cpf());
+        cliente.setTelefone(dto.telefone());
+        
         return clienteRepository.save(cliente);
     }
 

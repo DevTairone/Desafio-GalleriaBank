@@ -1,6 +1,6 @@
 package galleriabank.compras.infrastructure.web.controllers;
 
-import galleriabank.compras.infrastructure.services.PedidoService;
+import galleriabank.compras.application.usecases.PedidoUseCase;
 import galleriabank.compras.infrastructure.web.dtos.request.PedidoRequestDTO;
 import galleriabank.compras.infrastructure.web.dtos.response.PedidoResponseDTO;
 import jakarta.validation.Valid;
@@ -12,19 +12,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/pedidos")
 public class PedidoController {
 
-    private final PedidoService pedidoService;
+    private final PedidoUseCase pedidoUseCase;
 
-    public PedidoController(PedidoService pedidoService) {
-        this.pedidoService = pedidoService;
+    public PedidoController(PedidoUseCase pedidoUseCase) {
+        this.pedidoUseCase = pedidoUseCase;
     }
 
     @PostMapping
     public ResponseEntity<PedidoResponseDTO> criarPedido(@RequestBody @Valid PedidoRequestDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.criarPedido(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoUseCase.criarPedido(dto));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PedidoResponseDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(pedidoService.buscarPorId(id));
+        return ResponseEntity.ok(pedidoUseCase.buscarPorId(id));
     }
 }

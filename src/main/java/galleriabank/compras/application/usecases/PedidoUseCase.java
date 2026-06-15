@@ -1,29 +1,31 @@
-package galleriabank.compras.infrastructure.services;
+package galleriabank.compras.application.usecases;
 
 import galleriabank.compras.core.domain.Cliente;
 import galleriabank.compras.core.domain.Pedido;
 import galleriabank.compras.core.domain.Produto;
-import galleriabank.compras.infrastructure.persistence.repositories.PedidoRepository;
+import galleriabank.compras.core.ports.ClienteRepositoryPort;
+import galleriabank.compras.core.ports.PedidoRepositoryPort;
+import galleriabank.compras.core.ports.ProdutoRepositoryPort;
 import galleriabank.compras.infrastructure.web.dtos.request.PedidoRequestDTO;
 import galleriabank.compras.infrastructure.web.dtos.response.PedidoResponseDTO;
 import galleriabank.compras.infrastructure.web.exceptions.BusinessException;
 import galleriabank.compras.infrastructure.web.exceptions.ResourceNotFoundException;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class PedidoService {
+public class PedidoUseCase {
 
-    private final PedidoRepository pedidoRepository;
-    private final ClienteService clienteService;
-    private final ProdutoService produtoService;
+    private final PedidoRepositoryPort pedidoRepository;
+    private final ClienteRepositoryPort clienteRepository;
+    private final ProdutoRepositoryPort produtoRepository;
 
-    public PedidoService(PedidoRepository pedidoRepository, ClienteService clienteService, ProdutoService produtoService) {
+    public PedidoUseCase(PedidoRepositoryPort pedidoRepository, ClienteRepositoryPort clienteRepository, ProdutoRepositoryPort produtoRepository) {
         this.pedidoRepository = pedidoRepository;
-        this.clienteService = clienteService;
-        this.produtoService = produtoService;
+        this.clienteRepository = clienteRepository;
+        this.produtoRepository = produtoRepository;
     }
 
     @Transactional
@@ -32,10 +34,12 @@ public class PedidoService {
             throw new BusinessException("O pedido deve conter pelo menos um produto.");
         }
 
-        Cliente cliente = clienteService.buscarPorId(dto.clienteId());
+        Cliente cliente = clienteRepository.findById(dto.clienteId())
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado."));
 
         List<Produto> produtos = dto.produtosIds().stream()
-                .map(produtoService::buscarPorId)
+                .map(id -> produtoRepository.findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado.")))
                 .toList();
 
         Pedido pedido = new Pedido();

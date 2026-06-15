@@ -20,7 +20,8 @@ spring:
   security:
     user:
       name: admin
-      password: adminpassword
+      # Senha 'adminpassword' criptografada com BCrypt
+      password: "$2a$10$vI8Z8n3Q1R6Y6S6/kY5u5.8P.u6q8lW6Z.eIe/9oUv1p7r8vW9W6e"
 
 springdoc:
   swagger-ui:

@@ -1,26 +1,31 @@
-package galleriabank.compras.infrastructure.services;
+package galleriabank.compras.application.usecases;
 
 import galleriabank.compras.core.domain.Produto;
-import galleriabank.compras.infrastructure.persistence.repositories.PedidoRepository;
-import galleriabank.compras.infrastructure.persistence.repositories.ProdutoRepository;
+import galleriabank.compras.core.ports.PedidoRepositoryPort;
+import galleriabank.compras.infrastructure.web.dtos.request.ProdutoRequestDTO;
+import galleriabank.compras.core.ports.ProdutoRepositoryPort;
 import galleriabank.compras.infrastructure.web.exceptions.BusinessException;
 import galleriabank.compras.infrastructure.web.exceptions.ResourceNotFoundException;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 @Service
-public class ProdutoService {
+public class ProdutoUseCase {
 
-    private final ProdutoRepository produtoRepository;
-    private final PedidoRepository pedidoRepository;
+    private final ProdutoRepositoryPort produtoRepository;
+    private final PedidoRepositoryPort pedidoRepository;
 
-    public ProdutoService(ProdutoRepository produtoRepository, PedidoRepository pedidoRepository) {
+    public ProdutoUseCase(ProdutoRepositoryPort produtoRepository, PedidoRepositoryPort pedidoRepository) {
         this.produtoRepository = produtoRepository;
         this.pedidoRepository = pedidoRepository;
     }
 
     @Transactional
-    public Produto cadastrar(Produto produto) {
+    public Produto cadastrar(ProdutoRequestDTO dto) {
+        Produto produto = new Produto();
+        produto.setDescricao(dto.descricao());
+        produto.setValor(dto.valor());
+        
         return produtoRepository.save(produto);
     }
 

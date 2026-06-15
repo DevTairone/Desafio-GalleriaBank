@@ -1,23 +1,21 @@
-package galleriabank.compras.infrastructure.services;
+package galleriabank.compras.application.usecases;
 
 import galleriabank.compras.core.domain.Usuario;
-import galleriabank.compras.infrastructure.persistence.repositories.UsuarioRepository;
+import galleriabank.compras.core.ports.UsuarioRepositoryPort;
 import galleriabank.compras.infrastructure.web.dtos.request.UsuarioRequestDTO;
 import galleriabank.compras.infrastructure.web.exceptions.BusinessException;
 import galleriabank.compras.infrastructure.web.exceptions.ResourceNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 @Service
-public class UsuarioService {
+public class UsuarioUseCase {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioRepositoryPort usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public UsuarioUseCase(UsuarioRepositoryPort usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -31,8 +29,7 @@ public class UsuarioService {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.nome());
         usuario.setLogin(dto.login());
-        // TODO: Aqui depois vamos injetar o PasswordEncoder do Spring Security para criptografar
-        usuario.setSenha(dto.senha());
+        usuario.setSenha(passwordEncoder.encode(dto.senha()));
         usuario.setExcluido(false);
 
         return usuarioRepository.save(usuario);
@@ -46,7 +43,9 @@ public class UsuarioService {
     @Transactional
     public void removerLogico(Long id) {
         Usuario usuario = buscarPorId(id);
-        usuario.setExcluido(true); // Soft Delete
+        usuario.setExcluido(true);
         usuarioRepository.save(usuario);
     }
 }
+
+
