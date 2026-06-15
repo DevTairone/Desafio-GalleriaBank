@@ -1,5 +1,6 @@
 package galleriabank.compras.core.domain;
 
+import galleriabank.compras.infrastructure.web.validation.CPF;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -24,6 +25,7 @@ public class Cliente {
     private String nome;
 
     @NotBlank
+    @CPF
     @Column(nullable = false, unique = true)
     private String cpf;
 
