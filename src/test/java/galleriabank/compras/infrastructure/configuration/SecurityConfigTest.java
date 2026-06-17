@@ -21,7 +21,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = {UsuarioController.class, ClienteController.class})
@@ -56,6 +58,17 @@ class SecurityConfigTest {
     void getClientesComAutenticacaoDeveRetornar200() throws Exception {
         mockMvc.perform(get("/clientes/1"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Preflight CORS do frontend deve ser permitido")
+    void preflightCorsDoFrontendDeveSerPermitido() throws Exception {
+        mockMvc.perform(options("/clientes/1")
+                        .header("Origin", "http://localhost:4200")
+                        .header("Access-Control-Request-Method", "GET")
+                        .header("Access-Control-Request-Headers", "authorization,content-type"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "http://localhost:4200"));
     }
 
     @TestConfiguration
