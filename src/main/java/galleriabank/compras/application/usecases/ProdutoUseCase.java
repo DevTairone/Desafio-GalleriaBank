@@ -29,7 +29,7 @@ public class ProdutoUseCase {
         return produtoRepository.save(produto);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Produto atualizar(Long id,ProdutoRequestDTO dto) {
         Produto produto = buscarPorId(id);
         produto.setDescricao(dto.descricao());
