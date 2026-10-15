@@ -1,0 +1,9 @@
+general: {}
+secrets-management:
+    project-id: ab638a94-4ee5-4f3a-8d58-c00192a34b8f
+    default-environment: dev
+    mappings:
+        git-branch-to-environment:
+            dev: dev
+            homolog: homolog
+            prod: prod
