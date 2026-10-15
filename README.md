@@ -37,19 +37,23 @@ O projeto pode estar organizado de duas formas:
 
 ### 1) Subir backend
 
+As credenciais (banco e usuario admin) nao ficam no repositorio. Elas sao lidas de variaveis de ambiente, fornecidas pelo [Infisical](https://infisical.com) conforme a branch atual (`dev`, `homolog` ou `prod`). A lista de variaveis esta em `.env.exemplo`.
+
 ```powershell
 Set-Location "C:\Users\tairo\Desktop\novo-projeto\compras"
-docker-compose up -d
-.\mvnw.cmd spring-boot:run
+infisical run -- docker compose up -d
+infisical run -- .\mvnw.cmd spring-boot:run
 ```
+
+Sem o Infisical, copie `.env.exemplo` para `.env`, preencha os valores e rode `.\mvnw.cmd spring-boot:run` (o `.env` e lido pelo Spring e esta no `.gitignore`).
 
 Backend:
 - API: `http://localhost:8080`
 - Swagger: `http://localhost:8080/swagger-ui.html`
 
 Credenciais basicas (Spring Security):
-- usuario: `admin`
-- senha: `adminpassword`
+- usuario: valor de `ADMIN_USUARIO`
+- senha: valor de `ADMIN_SENHA` (consultar no Infisical, ambiente da branch atual)
 
 ### 2) Subir frontend
 
@@ -76,7 +80,7 @@ Frontend:
 
 1. Abra o Swagger em `http://localhost:8080/swagger-ui.html` para confirmar backend online.
 2. Abra o frontend em `http://localhost:4200`.
-3. Faça login no frontend com `admin` / `adminpassword`.
+3. Faça login no frontend com `ADMIN_USUARIO` / `ADMIN_SENHA` do ambiente atual.
 4. Navegue por `Usuarios`, `Clientes`, `Produtos` e `Pedidos`.
 5. Teste operacoes basicas (busca por ID e chamadas protegidas).
 
@@ -86,8 +90,8 @@ Frontend:
 
 ```powershell
 Set-Location "C:\Users\tairo\Desktop\novo-projeto\compras"
-.\mvnw.cmd test
-.\mvnw.cmd clean package
+infisical run -- .\mvnw.cmd test
+infisical run -- .\mvnw.cmd clean package
 ```
 
 ### Frontend
@@ -106,7 +110,7 @@ npm run build
 - Verifique CORS no backend, se necessario.
 
 ### Erro 401 no frontend
-- Confirme usuario/senha (`admin` / `adminpassword`).
+- Confirme usuario/senha (`ADMIN_USUARIO` / `ADMIN_SENHA` no Infisical, ambiente da branch atual).
 - Confirme envio do header `Authorization: Basic ...`.
 
 ### Porta em uso

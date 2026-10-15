@@ -5,8 +5,8 @@ services:
     image: postgres:16-alpine
     container_name: galleriabank_postgres_container
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: ${DB_USUARIO:?Defina DB_USUARIO (infisical run --env=dev -- docker compose up -d)}
+      POSTGRES_PASSWORD: ${DB_SENHA:?Defina DB_SENHA (infisical run --env=dev -- docker compose up -d)}
       POSTGRES_DB: galleriabank_compras
     ports:
       - "5432:5432"
