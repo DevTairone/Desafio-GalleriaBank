@@ -45,7 +45,13 @@ infisical run -- docker compose up -d
 infisical run -- .\mvnw.cmd spring-boot:run
 ```
 
-Sem o Infisical, copie `.env.exemplo` para `.env`, preencha os valores e rode `.\mvnw.cmd spring-boot:run` (o `.env` e lido pelo Spring e esta no `.gitignore`).
+Para rodar pela IDE (sem `infisical run`), gere o arquivo local com os segredos da branch atual:
+
+```powershell
+infisical.cmd export --format=yaml --output-file=.env.yaml
+```
+
+O Spring le o `.env.yaml` automaticamente (`spring.config.import`) e ele esta no `.gitignore`. Sem acesso ao Infisical, copie `.env.exemplo` para `.env.yaml` e preencha os valores. Use o formato YAML: o formato `dotenv` do Infisical coloca aspas nos valores, e o Spring as leria como parte do valor.
 
 Backend:
 - API: `http://localhost:8080`
